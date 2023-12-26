@@ -1,5 +1,5 @@
-from tensorflow import keras
 import numpy as np
+from tensorflow import keras
 
 model = keras.models.load_model('controllerB_nnv.h5')
 model.summary()

@@ -11,19 +11,20 @@
 ##        contained in the LICENCE file in this directory.             ##
 ##                                                                     ##
 #########################################################################
-from io import FileIO
-from torch.nn import functional as F
-import torch.nn as nn
-from collections import OrderedDict
 import math
+import os
+from collections import OrderedDict
+from io import FileIO
+
+import numpy as np
+import torch
+import torch.nn as nn
+from torch.nn import functional as F
 
 ########################################
 # Defined the model architectures
 ########################################
 
-import numpy as np
-import torch
-import os
 
 class Flatten(nn.Module):
     def forward(self, x):

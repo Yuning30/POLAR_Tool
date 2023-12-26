@@ -5,10 +5,10 @@ Stanley Bak
 June 2021
 '''
 
+import re
 from copy import deepcopy
 
 import numpy as np
-import re
 
 
 def read_statements(vnnlib_filename):

@@ -1,6 +1,6 @@
 """ Bivariate operators"""
+from .activation import BoundReciprocal, BoundSqrt
 from .base import *
-from .activation import BoundSqrt, BoundReciprocal
 
 
 class BoundMul(Bound):

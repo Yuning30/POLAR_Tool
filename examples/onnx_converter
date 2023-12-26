@@ -1,10 +1,10 @@
 #!/usr/bin/python
 
+import os
+import sys
+
 import onnx
 from onnx import numpy_helper
-import os, sys
- 
- 
 
 
 def main(onnx_model_path):

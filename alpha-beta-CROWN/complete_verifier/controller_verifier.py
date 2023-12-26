@@ -13,23 +13,22 @@
 #########################################################################
 """alpha-beta-CROWN verifier interface to handle controller verification."""
 
-import os
-import socket
-import random
-import time
 import gc
+import os
+import random
+import socket
+import time
 
-from utils import get_test_acc, load_model, load_verification_dataset
-
+import arguments
 import numpy as np
 import pandas as pd
-
 import torch
-import arguments
+from attack_pgd import pgd_attack
 from auto_LiRPA import BoundedModule, BoundedTensor
 from auto_LiRPA.perturbations import PerturbationLpNorm
-from bab_verification_general import mip, incomplete_verifier, bab
-from attack_pgd import pgd_attack
+from bab_verification_general import bab, incomplete_verifier, mip
+
+from utils import get_test_acc, load_model, load_verification_dataset
 
 
 def config_args():

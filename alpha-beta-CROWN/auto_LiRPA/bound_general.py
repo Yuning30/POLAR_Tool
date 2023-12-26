@@ -1,21 +1,20 @@
-import time
 import os
-import numpy as np
-from collections import OrderedDict, deque, defaultdict
+import time
+import warnings
+from collections import OrderedDict, defaultdict, deque
 
+import numpy as np
 import torch
 import torch.optim as optim
 from torch.nn import DataParallel, Parameter, parameter
 
+from .adam_element_lr import AdamElementLR
 from .bound_op_map import bound_op_map
 from .bound_ops import *
-from .bounded_tensor import BoundedTensor, BoundedParameter
+from .bounded_tensor import BoundedParameter, BoundedTensor
 from .parse_graph import parse_module
 from .perturbations import *
 from .utils import *
-from .adam_element_lr import AdamElementLR
-
-import warnings
 
 warnings.simplefilter("once")
 

@@ -1,5 +1,5 @@
-from .bound_general import BoundedModule, BoundDataParallel
-from .bounded_tensor import BoundedTensor, BoundedParameter
+from .bound_general import BoundDataParallel, BoundedModule
+from .bounded_tensor import BoundedParameter, BoundedTensor
 from .perturbations import PerturbationLpNorm, PerturbationSynonym
 from .wrapper import CrossEntropyWrapper, CrossEntropyWrapperMultiInput
 

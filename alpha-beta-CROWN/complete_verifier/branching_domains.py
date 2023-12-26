@@ -14,10 +14,10 @@
 import bisect
 import copy
 from collections import defaultdict
-import torch
+
 import numpy as np
+import torch
 from sortedcontainers import SortedList
-import copy
 
 
 class gconstr:

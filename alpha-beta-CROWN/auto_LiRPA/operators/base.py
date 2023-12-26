@@ -1,18 +1,18 @@
 """ Base class and functions for implementing bound operators"""
 import copy
+import math
 import os
 import time
-import math
+from collections import OrderedDict
+from itertools import chain
+
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import numpy as np
-from itertools import chain
-from numpy.lib.arraysetops import isin
-from collections import OrderedDict
-
-from auto_LiRPA.perturbations import * 
+from auto_LiRPA.perturbations import *
 from auto_LiRPA.utils import *
+from numpy.lib.arraysetops import isin
 
 torch._C._jit_set_profiling_executor(False)
 torch._C._jit_set_profiling_mode(False)

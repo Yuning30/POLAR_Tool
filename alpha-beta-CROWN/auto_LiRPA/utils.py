@@ -1,17 +1,18 @@
 import logging
+import math
+import operator
+import os
 import pickle
+import sys
 import time
+import warnings
+from collections import Sequence, defaultdict, namedtuple
+from functools import reduce
+
+import appdirs
 import torch
 import torch.nn as nn
-import os
-import sys
-import appdirs
-from collections import defaultdict, Sequence, namedtuple
-from functools import reduce
-import operator
-import math
 import torch.nn.functional as F
-import warnings
 
 logging.basicConfig(
     format='%(levelname)-8s %(asctime)-12s %(message)s',

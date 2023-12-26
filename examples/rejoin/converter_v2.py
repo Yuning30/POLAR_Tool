@@ -1,6 +1,7 @@
-import pickle
-import numpy as np
 import os
+import pickle
+
+import numpy as np
 
 pathname = "rejoin_tanh64x64"
 f = open(os.path.join("./", pathname + ".pickle"), 'rb')

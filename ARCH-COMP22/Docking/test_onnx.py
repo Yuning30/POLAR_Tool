@@ -1,5 +1,6 @@
-import onnxruntime, onnx
 import numpy as np
+import onnx
+import onnxruntime
 
 model_name = "model.onnx"
 onnx_model = onnx.load(model_name)

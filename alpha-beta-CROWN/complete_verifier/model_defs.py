@@ -11,11 +11,12 @@
 ##        contained in the LICENCE file in this directory.             ##
 ##                                                                     ##
 #########################################################################
-from io import FileIO
-from torch.nn import functional as F
-import torch.nn as nn
-from collections import OrderedDict
 import math
+from collections import OrderedDict
+from io import FileIO
+
+import torch.nn as nn
+from torch.nn import functional as F
 
 ########################################
 # Defined the model architectures
@@ -1107,9 +1108,11 @@ class TradesCNN_no_maxpool(nn.Module):
         logits = self.classifier(features.view(-1, 64 * 4 * 4))
         return logits
 
+import os
+
 import numpy as np
 import torch
-import os
+
 ACTIVS = {
     "sigmoid": nn.Sigmoid(),
     "ReLU": nn.ReLU(True),

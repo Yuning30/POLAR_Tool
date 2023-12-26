@@ -14,25 +14,35 @@
 """Build, solve, and refine output bounds using gurobi LP/MIP solver based on the bounds obtained by auto_LiRPA."""
 
 import copy
-import time
-import random
-from collections import defaultdict, OrderedDict
-
-import torch
-import arguments
-from torch.nn import ZeroPad2d
-
-from auto_LiRPA import BoundedModule, BoundedTensor
-from auto_LiRPA.perturbations import *
-from auto_LiRPA.utils import (reduction_min, reduction_max, reduction_mean, reduction_sum,
-                            stop_criterion_sum, stop_criterion_min)
-from model_defs import Flatten
-from auto_LiRPA.bound_ops import BoundRelu, BoundLinear, BoundConv, BoundBatchNormalization, BoundAdd
-
 import multiprocessing
 import multiprocessing.pool
-import sys
 import os
+import random
+import sys
+import time
+from collections import OrderedDict, defaultdict
+
+import arguments
+import torch
+from auto_LiRPA import BoundedModule, BoundedTensor
+from auto_LiRPA.bound_ops import (
+    BoundAdd,
+    BoundBatchNormalization,
+    BoundConv,
+    BoundLinear,
+    BoundRelu,
+)
+from auto_LiRPA.perturbations import *
+from auto_LiRPA.utils import (
+    reduction_max,
+    reduction_mean,
+    reduction_min,
+    reduction_sum,
+    stop_criterion_min,
+    stop_criterion_sum,
+)
+from model_defs import Flatten
+from torch.nn import ZeroPad2d
 
 try:
     import gurobipy as grb

@@ -1,10 +1,12 @@
-from torch.nn import functional as F
-import torch.nn as nn
-from collections import OrderedDict
 import math
+import os
+from collections import OrderedDict
+
 import numpy as np
 import torch
-import os
+import torch.nn as nn
+from torch.nn import functional as F
+
 ACTIVS = {
     "sigmoid": nn.Sigmoid(),
     "ReLU": nn.ReLU(),

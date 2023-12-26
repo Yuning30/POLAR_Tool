@@ -16,13 +16,12 @@ import time
 from collections import defaultdict
 
 import torch
-from torch.nn import ZeroPad2d
-
 from auto_LiRPA import BoundedModule, BoundedTensor
 from auto_LiRPA.bound_ops import BoundRelu
-from auto_LiRPA.utils import reduction_max, stop_criterion_max
 from auto_LiRPA.perturbations import *
+from auto_LiRPA.utils import reduction_max, stop_criterion_max
 from model_defs import Flatten
+from torch.nn import ZeroPad2d
 
 try:
     import gurobipy as grb

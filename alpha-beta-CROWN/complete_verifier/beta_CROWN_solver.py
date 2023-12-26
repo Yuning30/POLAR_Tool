@@ -12,20 +12,17 @@
 ##                                                                     ##
 #########################################################################
 import copy
-import time
 import random
-from collections import defaultdict, OrderedDict
+import time
+from collections import OrderedDict, defaultdict
 
-import torch
 import arguments
-
+import torch
 from auto_LiRPA import BoundedModule, BoundedTensor
 from auto_LiRPA.bound_ops import BoundRelu
 from auto_LiRPA.perturbations import *
-from auto_LiRPA.utils import reduction_sum, stop_criterion_sum, stop_criterion_min
-
+from auto_LiRPA.utils import reduction_sum, stop_criterion_min, stop_criterion_sum
 from lp_mip_solver import *
-
 
 total_func_time = total_prepare_time = total_bound_time = total_beta_bound_time = total_transfer_time = total_finalize_time = 0.0
 

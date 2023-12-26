@@ -1,4 +1,5 @@
-from .base import * 
+from .base import *
+
 
 class BoundCast(Bound):
     def __init__(self, input_name, name, ori_name, attr, inputs, output_index, options, device):

@@ -1,8 +1,8 @@
 import torch
+import torch._C as _C
 import torch.nn as nn
 from torch import Tensor as Tensor
 
-import torch._C as _C
 
 class BoundedTensor(Tensor): 
     @staticmethod

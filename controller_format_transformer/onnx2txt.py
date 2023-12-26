@@ -1,9 +1,8 @@
 import argparse
+
 import onnx
-
-from tensorflow.keras.models import load_model
-
 from onnx2keras import onnx_to_keras
+from tensorflow.keras.models import load_model
 
 
 def onnx2txt(onnx_file, txt_file):

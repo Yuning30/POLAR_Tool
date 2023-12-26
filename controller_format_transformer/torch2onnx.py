@@ -1,14 +1,14 @@
 
-from torch.nn import functional as F
-import torch.nn as nn
-from collections import OrderedDict
+import os
 import sys
-import onnx
-import onnxruntime as ort
+from collections import OrderedDict
 
 import numpy as np
+import onnx
+import onnxruntime as ort
 import torch
-import os
+import torch.nn as nn
+from torch.nn import functional as F
 
 
 class Flatten(nn.Module):

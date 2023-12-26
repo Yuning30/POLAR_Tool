@@ -11,18 +11,22 @@
 ##        contained in the LICENCE file in this directory.             ##
 ##                                                                     ##
 #########################################################################
-from typing_extensions import final
-
-from numpy.lib.twodim_base import mask_indices
-import torch
-import numpy as np
 from itertools import groupby
 
+import numpy as np
+import torch
+from auto_LiRPA.bound_ops import (
+    BoundAdd,
+    BoundBatchNormalization,
+    BoundConv,
+    BoundLinear,
+    BoundRelu,
+)
+from model_defs import Flatten
+from numpy.lib.twodim_base import mask_indices
 from torch import nn
 from torch.nn import functional as F
-
-from model_defs import Flatten
-from auto_LiRPA.bound_ops import BoundRelu, BoundLinear, BoundConv, BoundBatchNormalization, BoundAdd
+from typing_extensions import final
 
 Icp_score_counter = 0
 

@@ -1,6 +1,7 @@
 """ Softmax """
 from .base import *
 
+
 class BoundSoftmaxImpl(nn.Module):
     def __init__(self, axis):
         super().__init__()

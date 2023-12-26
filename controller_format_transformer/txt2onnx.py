@@ -1,10 +1,11 @@
+import getopt
+import os
+import sys
+
 import numpy as np
 import onnx
-import sys, getopt
-import os
-from onnx import helper
-from onnx import numpy_helper
-from onnx import AttributeProto, TensorProto, GraphProto
+from onnx import AttributeProto, GraphProto, TensorProto, helper, numpy_helper
+
 
 class Layer(object):
     def __init__(

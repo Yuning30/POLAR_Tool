@@ -1,6 +1,7 @@
-import pickle
-import numpy as np
 import os
+import pickle
+
+import numpy as np
 
 f = open("./weights.pickle", 'rb')
 conf = pickle.load(f)

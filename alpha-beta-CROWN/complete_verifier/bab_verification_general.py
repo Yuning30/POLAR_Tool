@@ -13,28 +13,29 @@
 #########################################################################
 """alpha-beta-CROWN verifier with interface to handle vnnlib specifications used in VNN-COMP (except for ACASXu and nn4sys)."""
 
-import socket
-import random
-import pickle
-import os
-import time
-import gc
 import csv
-import torch
-import numpy as np
+import gc
+import os
+import pickle
+import random
+import socket
+import time
 from collections import defaultdict
 
 import arguments
-from beta_CROWN_solver import LiRPAConvNet
-from lp_mip_solver import FSB_score
-from batch_branch_and_bound import relu_bab_parallel
-from utils import load_model_onnx, convert_test_model
+import numpy as np
+import torch
 from attack_pgd import pgd_attack
 from auto_LiRPA import BoundedModule, BoundedTensor
 from auto_LiRPA.perturbations import PerturbationLpNorm
 from auto_LiRPA.utils import reduction_min, stop_criterion_min
-from read_vnnlib import read_vnnlib_simple
+from batch_branch_and_bound import relu_bab_parallel
+from beta_CROWN_solver import LiRPAConvNet
+from lp_mip_solver import FSB_score
 from nn4sys_verification import nn4sys_verification
+from read_vnnlib import read_vnnlib_simple
+
+from utils import convert_test_model, load_model_onnx
 
 
 def config_args():

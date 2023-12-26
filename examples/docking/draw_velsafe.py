@@ -1,5 +1,5 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 b, a = np.meshgrid(np.linspace(0, 30, 60), np.linspace(0, 30, 60))
 

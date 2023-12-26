@@ -1,20 +1,16 @@
-import os
-import socket
-import random
-import time
 import gc
+import os
+import random
+import socket
+import time
 
+import arguments
 import numpy as np
 import pandas as pd
-
 import torch
-import arguments
-
 from auto_LiRPA import BoundedModule, BoundedTensor
 from auto_LiRPA.perturbations import PerturbationLpNorm
-from bab_verification_general import mip, incomplete_verifier, bab
-
-
+from bab_verification_general import bab, incomplete_verifier, mip
 from model_defs import AttitudeController
 
 

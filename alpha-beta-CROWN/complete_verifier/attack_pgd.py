@@ -8,12 +8,13 @@
 ############################################################
 
 
-from argparse import ArgumentTypeError
 import math
-import torch
-import numpy as np
-from torch.optim import Optimizer
+from argparse import ArgumentTypeError
+
 import arguments
+import numpy as np
+import torch
+from torch.optim import Optimizer
 
 torch._C._jit_set_profiling_executor(False)
 torch._C._jit_set_profiling_mode(False)

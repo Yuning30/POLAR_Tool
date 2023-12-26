@@ -13,8 +13,11 @@
 #########################################################################
 import argparse
 import os
+
 import torch
-from utils import load_model_onnx, convert_nn4sys_model
+
+from utils import convert_nn4sys_model, load_model_onnx
+
 
 def get_path(onnx_file):
     return f'{os.path.basename(onnx_file)}.pt'

@@ -12,8 +12,8 @@
 ##                                                                     ##
 #########################################################################
 import argparse
-import sys
 import os
+import sys
 
 parser = argparse.ArgumentParser()
 

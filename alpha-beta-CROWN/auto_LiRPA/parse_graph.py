@@ -1,11 +1,12 @@
 import os
-import torch
-from collections import OrderedDict
 import re
-from collections import namedtuple
-from torch.onnx import OperatorExportTypes
+from collections import OrderedDict, namedtuple
+
+import torch
 from packaging import version
-from .bounded_tensor import BoundedTensor, BoundedParameter
+from torch.onnx import OperatorExportTypes
+
+from .bounded_tensor import BoundedParameter, BoundedTensor
 from .utils import logger, unpack_inputs
 
 Node = namedtuple('Node', (

@@ -17,12 +17,13 @@ Arguments parser and config file loader.
 When adding new commandline parameters, please make sure to provide a clear and descriptive help message and put it in under a related hierarchy.
 """
 
-import re
-import os
-import sys
-import yaml
 import argparse
+import os
+import re
+import sys
 from collections import defaultdict
+
+import yaml
 
 
 class ConfigHandler:

@@ -1,11 +1,22 @@
-import os
 import json
 import math
+import os
+
 import numpy as np
 import torch
 import torch.nn as nn
-from .utils import logger, eyeC, LinearBound, Patches, BoundList, patches_to_matrix, inplace_unfold
 import torch.nn.functional as F
+
+from .utils import (
+    BoundList,
+    LinearBound,
+    Patches,
+    eyeC,
+    inplace_unfold,
+    logger,
+    patches_to_matrix,
+)
+
 
 class Perturbation:
     r"""

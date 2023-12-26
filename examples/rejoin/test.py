@@ -1,4 +1,5 @@
 import numpy as np
+
 x = (np.random.random(4) - .5) * 3;
 print(x);
 print(np.clip(x[0], -.5, .5))

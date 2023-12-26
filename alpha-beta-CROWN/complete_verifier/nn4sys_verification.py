@@ -13,16 +13,18 @@
 #########################################################################
 """A specialized verifier for the NN4sys benchmark."""
 import math
-import time
 import pdb
+import time
+from collections import deque
+
 import arguments
+import numpy as np
+from auto_LiRPA import BoundedModule, BoundedTensor
+from auto_LiRPA.bound_ops import *
+from auto_LiRPA.perturbations import *
 
 from utils import *
-from auto_LiRPA import BoundedModule, BoundedTensor
-from auto_LiRPA.perturbations import *
-from auto_LiRPA.bound_ops import *
-from collections import deque
-import numpy as np
+
 
 @torch.no_grad()
 def compute_bounds(model_v1, model_v2, input_l, input_u, x=None, eps=None):

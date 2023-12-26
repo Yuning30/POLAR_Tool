@@ -1,6 +1,8 @@
 #!/usr/bin/python
 import sys
+
 import yaml
+
 
 def main(argv): 
     input_filename = argv[0]

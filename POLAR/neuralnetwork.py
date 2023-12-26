@@ -1,9 +1,11 @@
 import json
+import os
 import re
-import os,sys
+import sys
+
 import numpy as np
-from numpy import linalg as LA
 from keras import backend as K
+from numpy import linalg as LA
 
 
 class NN(object):

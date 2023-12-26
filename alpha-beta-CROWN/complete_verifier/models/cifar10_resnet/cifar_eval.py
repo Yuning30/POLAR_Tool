@@ -1,11 +1,11 @@
 import os
+
 import numpy as np
 import torch
 import torchvision.datasets as dset
 import torchvision.transforms as trans
-from torch.utils.data import DataLoader
-from torch.utils.data import sampler
 from resnet import resnet2b, resnet4b
+from torch.utils.data import DataLoader, sampler
 
 cifar10_mean = (0.4914, 0.4822, 0.4465)  # np.mean(train_set.train_data, axis=(0,1,2))/255
 cifar10_std = (0.2471, 0.2435, 0.2616)  # np.std(train_set.train_data, axis=(0,1,2))/255

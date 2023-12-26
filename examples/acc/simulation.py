@@ -1,9 +1,11 @@
-import tensorflow as tf
-import numpy as np
-import yaml
 import math
+
 import matplotlib.pyplot as plt
+import numpy as np
+import tensorflow as tf
+import yaml
 from tensorflow.keras.models import model_from_json
+
 
 def load_yml_model(network = 'tanh20x20x20'):
     nn_verisig = network + '.yml'

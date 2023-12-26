@@ -1,32 +1,28 @@
 import os
 import sys
 
-
 CROWN_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "alpha-beta-CROWN/complete_verifier/")
 print(CROWN_DIR)
 if not os.path.isdir(CROWN_DIR):
     raise Exception("Please set your own CROWN directory.")
 sys.path.append(CROWN_DIR)
 
-import subprocess
-import socket
-import random
-import time
 import gc
+import random
+import socket
+import subprocess
+import time
 
+import arguments
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-
 import torch
-import arguments
-
-import matplotlib.pyplot as plt
-
 from auto_LiRPA import BoundedModule, BoundedTensor
 from auto_LiRPA.perturbations import PerturbationLpNorm
-from bab_verification_general import mip, incomplete_verifier, bab
-
+from bab_verification_general import bab, incomplete_verifier, mip
 from crown_model_def import AttitudeController
+
 
 def config_args():
 

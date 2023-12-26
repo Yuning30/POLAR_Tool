@@ -1,8 +1,9 @@
-import torch
 import math
-from torch.optim.optimizer import Optimizer
-from torch import Tensor
 from typing import List, Optional
+
+import torch
+from torch import Tensor
+from torch.optim.optimizer import Optimizer
 
 
 def adam(params: List[Tensor],

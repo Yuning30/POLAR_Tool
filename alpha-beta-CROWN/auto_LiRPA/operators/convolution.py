@@ -1,6 +1,6 @@
 """ Convolution, pooling and padding operators"""
-from .base import *
 from .activation import BoundOptimizableActivation
+from .base import *
 
 
 class BoundConv(Bound):

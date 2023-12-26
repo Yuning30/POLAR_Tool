@@ -1,10 +1,12 @@
 #!/usr/bin/python
-import sys
-import yaml
-import pickle
-import numpy as np
 import os
+import pickle
+import sys
+
+import numpy as np
+import yaml
 from scipy.io import savemat
+
 
 def main(argv): 
     input_filename = argv[0]

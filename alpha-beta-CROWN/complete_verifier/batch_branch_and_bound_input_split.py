@@ -12,13 +12,18 @@
 ##                                                                     ##
 #########################################################################
 import time
+from collections import defaultdict
+
 import numpy as np
 import torch
-from collections import defaultdict
-from sortedcontainers import SortedList
-
-from branching_domains_input_split import pick_out_batch, add_domain_parallel, InputDomain, input_split_batch
 from attack_pgd import AdamClipping
+from branching_domains_input_split import (
+    InputDomain,
+    add_domain_parallel,
+    input_split_batch,
+    pick_out_batch,
+)
+from sortedcontainers import SortedList
 
 Visited, Solve_slope = 0, False
 

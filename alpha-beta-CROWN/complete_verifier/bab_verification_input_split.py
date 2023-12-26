@@ -12,21 +12,20 @@
 ##                                                                     ##
 #########################################################################
 import argparse
-import socket
-import random
-import time
-import gc
 import csv
+import gc
+import random
+import socket
+import time
+
 import arguments
-
-from beta_CROWN_solver_input_split import LiRPAConvNet
-from batch_branch_and_bound_input_split import relu_bab_parallel
-
-from utils import *
-
 from auto_LiRPA import BoundedModule, BoundedTensor
 from auto_LiRPA.perturbations import *
+from batch_branch_and_bound_input_split import relu_bab_parallel
+from beta_CROWN_solver_input_split import LiRPAConvNet
 from read_vnnlib import read_vnnlib_simple
+
+from utils import *
 
 parser = argparse.ArgumentParser()
 

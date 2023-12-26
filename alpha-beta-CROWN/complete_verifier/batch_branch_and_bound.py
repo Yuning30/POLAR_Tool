@@ -11,17 +11,27 @@
 ##        contained in the LICENCE file in this directory.             ##
 ##                                                                     ##
 #########################################################################
-import time
 import random
+import time
+from collections import Counter, defaultdict
+
+import arguments
 import numpy as np
 import torch
-from collections import defaultdict, Counter
-
 from auto_LiRPA.utils import stop_criterion_sum
-from branching_domains import pick_out_batch, add_domain_parallel, ReLUDomain, SortedList, DFS_SortedList, merge_domains_params
-from branching_heuristics import choose_node_parallel_FSB, choose_node_parallel_crown, choose_node_parallel_kFSB
-import arguments
-
+from branching_domains import (
+    DFS_SortedList,
+    ReLUDomain,
+    SortedList,
+    add_domain_parallel,
+    merge_domains_params,
+    pick_out_batch,
+)
+from branching_heuristics import (
+    choose_node_parallel_crown,
+    choose_node_parallel_FSB,
+    choose_node_parallel_kFSB,
+)
 
 Visited, Flag_first_split = 0, True
 Use_optimized_split = False

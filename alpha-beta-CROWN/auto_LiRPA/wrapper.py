@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 
+
 class CrossEntropyWrapper(nn.Module):
     def __init__(self, model):
         super(CrossEntropyWrapper, self).__init__()

@@ -11,19 +11,19 @@
 ##        contained in the LICENCE file in this directory.             ##
 ##                                                                     ##
 #########################################################################
+import gzip
+import os
 from collections import OrderedDict
 
-import os
-import gzip
+import arguments
+import numpy as np
+import onnx
+import onnx2pytorch
+import onnxruntime as ort
+import pandas as pd
 import torch
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
-import numpy as np
-import pandas as pd
-import onnx2pytorch
-import onnx
-import onnxruntime as ort
-import arguments
 
 # Import all model architectures.
 from model_defs import *

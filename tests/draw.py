@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+
 plt.rcParams['text.usetex'] = True
 xys = []
 f = open("bp_relu_plt.txt", "r")
