@@ -3,7 +3,7 @@
 #include <chrono>
 #include <fstream>
 #include <string>
-//#include "../flowstar-toolbox/Constraint.h"
+// #include "../flowstar-toolbox/Constraint.h"
 
 using namespace std;
 using namespace flowstar;
@@ -11,15 +11,20 @@ using namespace flowstar;
 double my_relu(double v) { return max(v, 0.0); }
 
 double calculate_safe_loss(const vector<vector<double>> &reached_set,
-                           const vector<vector<double>> &unsafe_set) {
+                           const vector<vector<double>> &unsafe_set)
+{
   double loss = 0.0;
   bool initialized = false;
-  for (int i = 0; i < reached_set.size(); ++i) {
-    if (!initialized) {
+  for (int i = 0; i < reached_set.size(); ++i)
+  {
+    if (!initialized)
+    {
       initialized = true;
       loss = my_relu(unsafe_set[i][1] - reached_set[i][0]);
       loss = min(loss, my_relu(reached_set[i][1] - unsafe_set[i][0]));
-    } else {
+    }
+    else
+    {
       loss = min(loss, my_relu(unsafe_set[i][1] - reached_set[i][0]));
       loss = min(loss, my_relu(reached_set[i][1] - unsafe_set[i][0]));
     }
@@ -27,13 +32,18 @@ double calculate_safe_loss(const vector<vector<double>> &reached_set,
   return loss;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
   bool plot = false;
   bool print_safe_sets = false;
-  if (argc >= 3) {
-    if (string(argv[2]) == "--plot") {
+  if (argc >= 3)
+  {
+    if (string(argv[2]) == "--plot")
+    {
       plot = true;
-    } else if (string(argv[2]) == "--safe_sets") {
+    }
+    else if (string(argv[2]) == "--safe_sets")
+    {
       print_safe_sets = true;
     }
   }
@@ -62,23 +72,25 @@ int main(int argc, char *argv[]) {
       "./results/learned_dynamics/Marvelgymnasium_acc-v1/model.txt");
   // cout << "trying to load dynamics" << endl;
   vector<string> dynamics_str;
-  for (int i = 0; i < state_vars; ++i) {
+  for (int i = 0; i < state_vars; ++i)
+  {
     string equation;
     dynamics_file >> equation;
     equation.append("+x" + to_string(i + 1 + state_vars + action_vars));
     // cout << "successfully get one line" << endl;
-	// cout << equation << endl;
+    // cout << equation << endl;
     dynamics_str.push_back(equation);
   }
 
   ifstream stds_file(
       "./results/learned_dynamics/Marvelgymnasium_acc-v1/std.txt");
   vector<double> stds;
-  for (int i = 0; i < state_vars; ++i) {
+  for (int i = 0; i < state_vars; ++i)
+  {
     string std;
     stds_file >> std;
     // cout << "successfully get one line" << endl;
-	// cout << std << endl;
+    // cout << std << endl;
     stds.push_back(stod(std));
   }
 
@@ -143,13 +155,14 @@ int main(int argc, char *argv[]) {
   int interval = 1;
   NeuralNetwork *nn = nullptr;
   double safe_loss = 0.0;
-  vector<vector<double>> unsafe_set = {{1.0, 2.0}, {1.0, 2.0}};
-  for (int iter = 0; iter < steps; ++iter) {
+  for (int iter = 0; iter < steps; ++iter)
+  {
     // cout << "Step " << iter << " starts.      " << endl;
     // vector<Interval> box;
     // initial_set.intEval(box, order, setting.tm_setting.cutoff_threshold);
     // define the neural network controller
-    if (iter % interval == 0) {
+    if (iter % interval == 0)
+    {
       nn = new NeuralNetwork(controller_base + "_" + to_string(iter));
     }
 
@@ -182,7 +195,8 @@ int main(int argc, char *argv[]) {
                    symbolic_remainder);
 
     if (result.status == COMPLETED_SAFE || result.status == COMPLETED_UNSAFE ||
-        result.status == COMPLETED_UNKNOWN) {
+        result.status == COMPLETED_UNKNOWN)
+    {
       initial_set = result.fp_end_of_time;
       // for (int i = 0; i < 4; ++i) {
       // initial_set.tmvPre.tms[i].remainder =
@@ -196,21 +210,25 @@ int main(int argc, char *argv[]) {
           {inter_box[0].inf(), inter_box[0].sup()},
           {inter_box[1].inf(), inter_box[1].sup()}};
       safe_loss += calculate_safe_loss(reached_set, unsafe_set);
-      if (plot || print_safe_sets) {
+      if (plot || print_safe_sets)
+      {
         cout << inter_box[0].inf() << " " << inter_box[0].sup() << " "
              << inter_box[1].inf() << " " << inter_box[1].sup() << "\n";
       }
       // cout << "Flowpipe taylor remainder: " <<
       // initial_set.tmv.tms[0].remainder << "     " <<
       // initial_set.tmv.tms[1].remainder << endl;
-    } else {
+    }
+    else
+    {
       printf("Terminated due to too large overestimation.\n");
       return 1;
     }
   }
 
   // plot the flowpipes in the x-y plane
-  if (plot) {
+  if (plot)
+  {
     result.transformToTaylorModels(setting);
 
     Plot_Setting plot_setting(vars);
@@ -218,7 +236,8 @@ int main(int argc, char *argv[]) {
 
     int mkres =
         mkdir("./outputs", S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
-    if (mkres < 0 && errno != EEXIST) {
+    if (mkres < 0 && errno != EEXIST)
+    {
       printf("Can not create the directory for images.\n");
       exit(1);
     }
