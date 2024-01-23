@@ -3,24 +3,30 @@
 #include <chrono>
 #include <fstream>
 #include <string>
-//#include "../flowstar-toolbox/Constraint.h"
+// #include "../flowstar-toolbox/Constraint.h"
 
 using namespace std;
 using namespace flowstar;
 
-double my_relu(double v) {
+double my_relu(double v)
+{
 	return max(v, 0.0);
 }
 
-double calculate_safe_loss(const vector<vector<double>> &reached_set, const vector<vector<double>> &unsafe_set) {
+double calculate_safe_loss(const vector<vector<double>> &reached_set, const vector<vector<double>> &unsafe_set)
+{
 	double loss = 0.0;
 	bool initialized = false;
-	for (int i = 0; i < reached_set.size(); ++i) {
-		if (!initialized) {
+	for (int i = 0; i < reached_set.size(); ++i)
+	{
+		if (!initialized)
+		{
 			initialized = true;
 			loss = my_relu(unsafe_set[i][1] - reached_set[i][0]);
 			loss = min(loss, my_relu(reached_set[i][1] - unsafe_set[i][0]));
-		} else {
+		}
+		else
+		{
 			loss = min(loss, my_relu(unsafe_set[i][1] - reached_set[i][0]));
 			loss = min(loss, my_relu(reached_set[i][1] - unsafe_set[i][0]));
 		}
@@ -29,14 +35,17 @@ double calculate_safe_loss(const vector<vector<double>> &reached_set, const vect
 }
 
 int main(int argc, char *argv[])
-{	
+{
 	bool plot = false;
 	bool print_safe_sets = false;
-	if (argc >= 3) {
-		if (string(argv[2]) == "--plot") {
+	if (argc >= 3)
+	{
+		if (string(argv[2]) == "--plot")
+		{
 			plot = true;
 		}
-		else if(string(argv[2]) == "--safe_sets") {
+		else if (string(argv[2]) == "--safe_sets")
+		{
 			print_safe_sets = true;
 		}
 	}
@@ -56,10 +65,10 @@ int main(int argc, char *argv[])
 	int x6_id = vars.declareVar("x6");
 
 	int domainDim = numVars + 1;
-	
+
 	/* Old inteface
 	// Define the discrete dynamics.
-    // x0 is the position of the mountain car, x1 is the speed of the mountain car.
+	// x0 is the position of the mountain car, x1 is the speed of the mountain car.
 	Expression<Interval> deriv_x0("x0 + x1", vars); // Discrete: Next_x0 = x0 + x1
 	Expression<Interval> deriv_x1("x1 + 0.0015 * u - 0.0025 * cos(3 * x0)", vars); // Discrete: Next_x1 = x1 + 0.0015 * u - 0.0025 * cos(3 * x0)
 	Expression<Interval> deriv_u("u", vars);
@@ -73,25 +82,27 @@ int main(int argc, char *argv[])
 	Nonlinear_Discrete_Dynamics dynamics(dde_rhs);
 	*/
 	// Define the discrete dynamics.
-	
+
 	ifstream dynamics_file("./results/learned_dynamics/Marvelgymnasium_obstacle_mid-v1/model.txt");
 	// // cout << "trying to load dynamics" << endl;
 	vector<string> dynamics_str;
-	for (int i = 0; i < 4; ++i) {
+	for (int i = 0; i < 4; ++i)
+	{
 		string equation;
 		dynamics_file >> equation;
-	// 	// cout << "successfully get one line" << endl;
+		// 	// cout << "successfully get one line" << endl;
 		dynamics_str.push_back(equation);
 	}
 
-	for (int i = 0; i < 2; ++i) {
+	for (int i = 0; i < 2; ++i)
+	{
 		dynamics_str.push_back("0");
 	}
 	DDE<Real> dynamics(dynamics_str, vars);
 
 	// Specify the parameters for reachability computation.
 	Computational_Setting setting(vars);
-	//Computational_Setting setting;
+	// Computational_Setting setting;
 
 	unsigned int order = 4;
 
@@ -104,20 +115,20 @@ int main(int argc, char *argv[])
 	// print out the steps
 	setting.printOff();
 
-/*	// DDE does not require a remainder estimation
-	Interval I(-0.01, 0.01);
-	vector<Interval> remainder_estimation(numVars, I);
-	setting.setRemainderEstimation(remainder_estimation);
-*/
-	//setting.printOn();
+	/*	// DDE does not require a remainder estimation
+		Interval I(-0.01, 0.01);
+		vector<Interval> remainder_estimation(numVars, I);
+		setting.setRemainderEstimation(remainder_estimation);
+	*/
+	// setting.printOn();
 
-	//setting.prepare();
+	// setting.prepare();
 
 	/*
 	 * Initial set can be a box which is represented by a vector of intervals.
 	 * The i-th component denotes the initial set of the i-th state variable.
 	 */
-	int steps = 300;
+	int steps = 200;
 	Interval init_x1(-0.1, 0.1), init_x2(-0.1, 0.1), init_x3(-0.1, 0.1), init_x4(-0.1, 0.1);
 	// Interval init_x1(0.1), init_x2(0.1), init_x3(0.1), init_x4(0.1);
 	Interval init_x5(0), init_x6(0);
@@ -136,7 +147,7 @@ int main(int argc, char *argv[])
 
 	// no unsafe set
 	vector<Constraint> safeSet;
-	//vector<Constraint> unsafeSet;
+	// vector<Constraint> unsafeSet;
 
 	// result of the reachability computation
 	Result_of_Reachability result;
@@ -148,7 +159,8 @@ int main(int argc, char *argv[])
 	// unsigned int partition_num = 4000;
 	unsigned int partition_num = 200;
 
-	unsigned int if_symbo = 1;;
+	unsigned int if_symbo = 1;
+	;
 
 	double err_max = 0;
 	time_t start_timer;
@@ -180,10 +192,11 @@ int main(int argc, char *argv[])
 	for (int iter = 0; iter < steps; ++iter)
 	{
 		// cout << "Step " << iter << " starts.      " << endl;
-		//vector<Interval> box;
-		//initial_set.intEval(box, order, setting.tm_setting.cutoff_threshold);
+		// vector<Interval> box;
+		// initial_set.intEval(box, order, setting.tm_setting.cutoff_threshold);
 		// define the neural network controller
-		if (iter % interval == 0){
+		if (iter % interval == 0)
+		{
 			nn = new NeuralNetwork(controller_base + "_" + to_string(iter));
 		}
 
@@ -194,19 +207,20 @@ int main(int argc, char *argv[])
 		tmv_input.tms.push_back(initial_set.tmvPre.tms[2]);
 		tmv_input.tms.push_back(initial_set.tmvPre.tms[3]);
 
-
 		// taylor propagation
-        PolarSetting polar_setting(order, bernstein_order, partition_num, "Mix", "Concrete");
+		PolarSetting polar_setting(order, bernstein_order, partition_num, "Mix", "Concrete");
 		polar_setting.set_num_threads(-1);
 		TaylorModelVec<Real> tmv_output;
 
 		auto inner_begin = std::chrono::high_resolution_clock::now();
 
-		if(if_symbo == 0){
+		if (if_symbo == 0)
+		{
 			// not using symbolic remainder
 			nn->get_output_tmv(tmv_output, tmv_input, initial_set.domain, polar_setting, setting);
 		}
-		else{
+		else
+		{
 			// using symbolic remainder
 			nn->get_output_tmv_symbolic(tmv_output, tmv_input, initial_set.domain, polar_setting, setting);
 		}
@@ -216,12 +230,9 @@ int main(int argc, char *argv[])
 		// printf("nn time is %.2f s.\n", seconds);
 		nn_total_time += seconds;
 
-
 		// Matrix<Interval> rm1(1, 1);
 		// tmv_output.Remainder(rm1);
 		// cout << "Neural network taylor remainder: " << rm1 << endl;
-
-
 
 		initial_set.tmvPre.tms[x5_id] = tmv_output.tms[0];
 		initial_set.tmvPre.tms[x6_id] = tmv_output.tms[1];
@@ -236,7 +247,7 @@ int main(int argc, char *argv[])
 		// printf("flowstar time is %.2f s.\n", seconds);
 		flowstar_total_time += seconds;
 
-		//dynamics.reach_sr(result, setting, initial_set, 1, symbolic_remainder, unsafeSet);
+		// dynamics.reach_sr(result, setting, initial_set, 1, symbolic_remainder, unsafeSet);
 
 		// not using a symbolic remainder
 		// dynamics.reach(result, setting, initial_set, 1, unsafeSet);
@@ -248,8 +259,10 @@ int main(int argc, char *argv[])
 			result.fp_end_of_time.intEval(inter_box, order, setting.tm_setting.cutoff_threshold);
 			vector<vector<double>> reached_set = {{inter_box[0].inf(), inter_box[0].sup()}, {inter_box[1].inf(), inter_box[1].sup()}};
 			safe_loss += calculate_safe_loss(reached_set, unsafe_set);
-			if (plot || print_safe_sets) {
-				for (int i = 0; i < 3; ++i) {
+			if (plot || print_safe_sets)
+			{
+				for (int i = 0; i < 3; ++i)
+				{
 					cout << inter_box[i].inf() << " " << inter_box[i].sup() << " ";
 				}
 				cout << inter_box[3].inf() << " " << inter_box[3].sup() << "\n";
@@ -266,14 +279,15 @@ int main(int argc, char *argv[])
 
 	auto end = std::chrono::high_resolution_clock::now();
 	auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
-	seconds = elapsed.count() *  1e-9;
+	seconds = elapsed.count() * 1e-9;
 	// printf("Time measured: %.3f seconds.\n", seconds);
 
 	// time(&end_timer);
 	// seconds = difftime(start_timer, end_timer);
 
 	// plot the flowpipes in the x-y plane
-	if (plot) {
+	if (plot)
+	{
 		result.transformToTaylorModels(setting);
 
 		Plot_Setting plot_setting(vars);
@@ -291,9 +305,9 @@ int main(int argc, char *argv[])
 		// you need to create a subdir named outputs
 		// the file name is example.m and it is put in the subdir outputs
 		plot_setting.plot_2D_interval_GNUPLOT("./outputs/", benchmark_name + "_" + to_string(if_symbo), result.tmv_flowpipes, setting);
-		//plot_setting.plot_2D_octagon_GNUPLOT("./outputs/", benchmark_name + "_" + to_string(if_symbo), result);
+		// plot_setting.plot_2D_octagon_GNUPLOT("./outputs/", benchmark_name + "_" + to_string(if_symbo), result);
 	}
-	
+
 	cout << safe_loss << endl;
 	return 0;
 }

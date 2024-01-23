@@ -11,7 +11,7 @@ all: pendulum
 
 pendulum: pendulum.o
 	g++ -O3 -w $(LINK_FLAGS) -o $@ $^ $(LIBS)
-	cp pendulum ../../../
+	cp pendulum ../../../results/programs
 
 %.o: %.cc
 	$(CXX) -O3 -c $(CFLAGS) -o $@ $<

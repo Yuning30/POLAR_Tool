@@ -13,47 +13,6 @@ double my_relu(double v)
 	return max(v, 0.0);
 }
 
-vector<double> vector_minus(const vector<double> &lhs, const vector<double> &rhs)
-{
-	assert(lhs.size() == rhs.size());
-	vector<double> rst;
-	for (int i = 0; i < lhs.size(); ++i)
-	{
-		rst.push_back(lhs[i] - rhs[i]);
-	}
-	return rst;
-}
-
-double vector_max(const vector<double> &input)
-{
-	assert(input.size() > 0);
-	double m = input[0];
-	for (int i = 1; i < input.size(); ++i)
-	{
-		m = max(m, input[i]);
-	}
-	return m;
-}
-
-double vector_min(const vector<double> &input)
-{
-	assert(input.size() > 0);
-	double m = input[0];
-	for (int i = 1; i < input.size(); ++i)
-	{
-		m = min(m, input[i]);
-	}
-	return m;
-}
-
-double reach_loss(const vector<double> &final_lbs, const vector<double> &final_ubs,
-				  const vector<double> &reach_set_lbs, const vector<double> &reach_set_ubs)
-{
-	double lb_loss = my_relu(vector_max(vector_minus(final_lbs, reach_set_lbs)));
-	double ub_loss = my_relu(vector_max(vector_minus(reach_set_ubs, final_ubs)));
-	return max(lb_loss, ub_loss);
-}
-
 double calculate_safe_loss(const vector<vector<double>> &reached_set, const vector<vector<double>> &unsafe_set)
 {
 	double loss = 0.0;
@@ -75,6 +34,13 @@ double calculate_safe_loss(const vector<vector<double>> &reached_set, const vect
 	return loss;
 }
 
+double safe_loss_cartpole(double x_inf, double x_sup, double theta_inf, double theta_sup)
+{
+	double x_loss = max(my_relu(-1 * x_inf - 2.4), my_relu(x_sup - 2.4));
+	double theta_loss = max(my_relu(-1 * theta_inf - 0.209), my_relu(theta_sup - 0.209));
+	return max(x_loss, theta_loss);
+}
+
 int main(int argc, char *argv[])
 {
 	bool plot = false;
@@ -90,9 +56,9 @@ int main(int argc, char *argv[])
 			print_safe_sets = true;
 		}
 	}
-	string benchmark_name = "acc";
+	string benchmark_name = "cartpole";
 	// Declaration of the state variables.
-	unsigned int numVars = 3;
+	unsigned int numVars = 5;
 
 	intervalNumPrecision = 200;
 
@@ -102,26 +68,28 @@ int main(int argc, char *argv[])
 	int x2_id = vars.declareVar("x2");
 	int x3_id = vars.declareVar("x3");
 	int x4_id = vars.declareVar("x4");
-	int u_id = vars.declareVar("u");
+	int x5_id = vars.declareVar("x5");
 
 	int domainDim = numVars + 1;
 
-	vector<string> dynamics_str{
-		"x1+0.02*x2",
-		"x2+0.02*(((u + 0.05 * x4 * x4 * sin(x3)) / 1.1)  -  0.05 * ((9.8 * sin(x3) - cos(x3) *  ((u + 0.05 * x4 * x4 * sin(x3)) / 1.1)) / (0.5 * (4.0/3.0 - 0.1 * cos(x3) * cos(x3) / 1.1))) * cos(x3) / 1.1)",
-		"x3+0.02*x4",
-		"x4+0.02*((9.8 * sin(x3) - cos(x3) *  ((u + 0.05 * x4 * x4 * sin(x3)) / 1.1)) / (0.5 * (4.0/3.0 - 0.1 * cos(x3) * cos(x3) / 1.1)))",
-		"0"};
-	DDE<Real> dynamics(dynamics_str, vars);
+	// Define the discrete dynamics.
 
-	// vector<string> dynamics_str{
-	// "x2",
-	// "(((u + 0.05 * x4 * x4 * sin(x3)) / 1.1)  -  0.05 * ((9.8 * sin(x3) - cos(x3) *  ((u + 0.05 * x4 * x4 * sin(x3)) / 1.1)) / (0.5 * (4.0/3.0 - 0.1 * cos(x3) * cos(x3) / 1.1))) * cos(x3) / 1.1)",
-	// "x4",
-	// "((9.8 * sin(x3) - cos(x3) *  ((u + 0.05 * x4 * x4 * sin(x3)) / 1.1)) / (0.5 * (4.0/3.0 - 0.1 * cos(x3) * cos(x3) / 1.1)))",
-	// "0"
-	// };
-	// ODE<Real> dynamics(dynamics_str, vars);
+	ifstream dynamics_file("./results/learned_dynamics/Marvelgymnasium_cartpole-v1/model.txt");
+	// cout << "trying to load dynamics" << endl;
+	vector<string> dynamics_str;
+	for (int i = 0; i < 4; ++i)
+	{
+		string equation;
+		dynamics_file >> equation;
+		// cout << "successfully get line " << i << endl;
+		dynamics_str.push_back(equation);
+	}
+
+	for (int i = 0; i < 1; ++i)
+	{
+		dynamics_str.push_back("0");
+	}
+	DDE<Real> dynamics(dynamics_str, vars);
 
 	// Specify the parameters for reachability computation.
 	Computational_Setting setting(vars);
@@ -130,7 +98,7 @@ int main(int argc, char *argv[])
 	unsigned int order = 4;
 
 	// stepsize and order for reachability analysis
-	setting.setFixedStepsize(0.02, order); // the stepsize will be ignored
+	setting.setFixedStepsize(0.01, order); // the stepsize will be ignored
 
 	// cutoff threshold
 	setting.setCutoffThreshold(1e-8);
@@ -138,29 +106,19 @@ int main(int argc, char *argv[])
 	// print out the steps
 	setting.printOff();
 
-	/*	// DDE does not require a remainder estimation
-		Interval I(-0.01, 0.01);
-		vector<Interval> remainder_estimation(numVars, I);
-		setting.setRemainderEstimation(remainder_estimation);
-	*/
-	// setting.printOn();
-
-	// setting.prepare();
-
 	/*
 	 * Initial set can be a box which is represented by a vector of intervals.
 	 * The i-th component denotes the initial set of the i-th state variable.
 	 */
 	int steps = 200;
 	Interval init_x1(-0.05, 0.05), init_x2(-0.05, 0.05), init_x3(-0.05, 0.05), init_x4(-0.05, 0.05);
-	Interval init_u(0);
-
+	Interval init_x5(0);
 	std::vector<Interval> X0;
 	X0.push_back(init_x1);
 	X0.push_back(init_x2);
 	X0.push_back(init_x3);
 	X0.push_back(init_x4);
-	X0.push_back(init_u);
+	X0.push_back(init_x5);
 
 	// translate the initial set to a flowpipe
 	Flowpipe initial_set(X0);
@@ -177,26 +135,17 @@ int main(int argc, char *argv[])
 	// the order in use
 	// unsigned int order = 5;
 	Interval cutoff_threshold(-1e-12, 1e-12);
-	unsigned int bernstein_order = 4;
-	unsigned int partition_num = 4000;
-	// unsigned int partition_num = 200;
-
-	unsigned int if_symbo = 1;
-	;
+	unsigned int bernstein_order = 2;
+	// unsigned int partition_num = 4000;
+	unsigned int partition_num = 200;
 
 	double err_max = 0;
-	time_t start_timer;
-	time_t end_timer;
-	double seconds;
-	double nn_total_time = 0.0, flowstar_total_time = 0.0;
 
-	auto begin = std::chrono::high_resolution_clock::now();
 	string controller_base = string(argv[1]); //+net_name;
 	// cout << "controller base is " << controller_base;
-	int interval = 100;
+	int interval = 40;
 	NeuralNetwork *nn = nullptr;
 	double safe_loss = 0.0;
-	vector<vector<double>> unsafe_set = {{1.0, 2.0}, {1.0, 2.0}};
 	for (int iter = 0; iter < steps; ++iter)
 	{
 		// cout << "Step " << iter << " starts.      " << endl;
@@ -220,47 +169,27 @@ int main(int argc, char *argv[])
 		polar_setting.set_num_threads(-1);
 		TaylorModelVec<Real> tmv_output;
 
-		if (if_symbo == 0)
-		{
-			// not using symbolic remainder
-			nn->get_output_tmv(tmv_output, tmv_input, initial_set.domain, polar_setting, setting);
-		}
-		else
-		{
-			// using symbolic remainder
-			nn->get_output_tmv_symbolic(tmv_output, tmv_input, initial_set.domain, polar_setting, setting);
-		}
+		// using symbolic remainder
+		nn->get_output_tmv_symbolic(tmv_output, tmv_input, initial_set.domain, polar_setting, setting);
 
-		initial_set.tmvPre.tms[u_id] = tmv_output.tms[0];
+		initial_set.tmvPre.tms[x5_id] = tmv_output.tms[0];
 
-		// for (int i = 0; i < noise_var_ids.size(); ++i) {
-		// initial_set.tmvPre.tms[noise_var_ids[i]].remainder = initial_set.tmvPre.tms[noise_var_ids[i]].remainder + Interval(-3 * stds[i], 3 * stds[i]);
-		// }
 		// Always using symbolic remainder
 		// cout << "before reach is called" << endl;
 		dynamics.reach(result, setting, initial_set, 1, safeSet, symbolic_remainder);
-		// dynamics.reach(result, initial_set, 0.02, setting, safeSet, symbolic_remainder);
 
 		if (result.status == COMPLETED_SAFE || result.status == COMPLETED_UNSAFE || result.status == COMPLETED_UNKNOWN)
 		{
 			initial_set = result.fp_end_of_time;
-			// for (int i = 0; i < 4; ++i) {
-			// initial_set.tmvPre.tms[i].remainder = initial_set.tmvPre.tms[i].remainder + Interval(-3.0 * stds[i], 3.0 * stds[i]);
-			// }
 			vector<Interval> inter_box;
 			result.fp_end_of_time.intEval(inter_box, order, setting.tm_setting.cutoff_threshold);
-			vector<vector<double>> reached_set = {{inter_box[0].inf(), inter_box[0].sup()}, {inter_box[1].inf(), inter_box[1].sup()}};
-			safe_loss += calculate_safe_loss(reached_set, unsafe_set);
+			safe_loss += safe_loss_cartpole(inter_box[0].inf(), inter_box[0].sup(), inter_box[2].inf(), inter_box[2].sup());
 			if (plot || print_safe_sets)
 			{
-				cout << inter_box[0].inf() << " " << inter_box[0].sup() << " " << inter_box[1].inf() << " " << inter_box[1].sup() << " "
-					 << inter_box[2].inf() << " " << inter_box[2].sup() << " " << inter_box[3].inf() << " " << inter_box[3].sup() << "\n";
-			}
-
-			if (inter_box[0].inf() >= -0.05 && inter_box[0].sup() <= 0.05 && inter_box[1].inf() >= -0.05 && inter_box[1].sup() <= 0.05 &&
-				inter_box[2].inf() >= -0.05 && inter_box[2].sup() <= 0.05 && inter_box[3].inf() >= -0.05 && inter_box[3].sup() <= 0.05)
-			{
-				cout << "returned to initial region at step " << iter << "\n";
+				cout << inter_box[0].inf() << " " << inter_box[0].sup() << " "
+					 << inter_box[1].inf() << " " << inter_box[1].sup() << " "
+					 << inter_box[2].inf() << " " << inter_box[2].sup() << " "
+					 << inter_box[3].inf() << " " << inter_box[3].sup() << "\n";
 			}
 			// cout << "Flowpipe taylor remainder: " << initial_set.tmv.tms[0].remainder << "     " << initial_set.tmv.tms[1].remainder << endl;
 		}
@@ -271,29 +200,13 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	vector<Interval> inter_box;
-	result.fp_end_of_time.intEval(inter_box, order, setting.tm_setting.cutoff_threshold);
-	vector<double> final_lbs(4, -0.05);
-	vector<double> final_ubs(4, 0.05);
-	vector<double> reach_set_lbs;
-	vector<double> reach_set_ubs;
-	for (int i = 0; i < 4; ++i)
-	{
-		reach_set_lbs.push_back(inter_box[i].inf());
-		reach_set_ubs.push_back(inter_box[i].sup());
-		// if (print)
-		// {
-		// 	cout << inter_box[i].inf() << " ";
-		// 	cout << inter_box[i].sup() << " ";
-		// }
-	}
 	// plot the flowpipes in the x-y plane
 	if (plot)
 	{
 		result.transformToTaylorModels(setting);
 
 		Plot_Setting plot_setting(vars);
-		plot_setting.setOutputDims("x1", "x2");
+		plot_setting.setOutputDims("x1", "x3");
 
 		int mkres = mkdir("./outputs", S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
 		if (mkres < 0 && errno != EEXIST)
@@ -302,14 +215,12 @@ int main(int argc, char *argv[])
 			exit(1);
 		}
 
-		std::string running_time = "Running Time: " + to_string(seconds) + " seconds";
-
 		// you need to create a subdir named outputs
 		// the file name is example.m and it is put in the subdir outputs
-		plot_setting.plot_2D_interval_GNUPLOT("./outputs/", benchmark_name + "_" + to_string(if_symbo), result.tmv_flowpipes, setting);
+		plot_setting.plot_2D_interval_GNUPLOT("./outputs/", benchmark_name, result.tmv_flowpipes, setting);
 		// plot_setting.plot_2D_octagon_GNUPLOT("./outputs/", benchmark_name + "_" + to_string(if_symbo), result);
 	}
 
-	cout << reach_loss(final_lbs, final_ubs, reach_set_lbs, reach_set_ubs) << endl;
+	cout << safe_loss << endl;
 	return 0;
 }
